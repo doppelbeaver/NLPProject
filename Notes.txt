@@ -1,0 +1,33 @@
+Final Project
+
+Tasks:
+
+1. Run cross-dataset training with smaller learning rates
+
+2. Run MRPC_QQP training with more epochs
+
+3. Train on (Sample some examples from QQP + MRPC), evaluate on MRPC
+
+4. Ensure that for same sentence, all scores are 1.0
+
+5. After output file is generated:
+
+	a. Manually inspecting wrong predictions
+
+	b. Remove common words from one sentence, look at the difference in predictions
+
+	c. Submit on QQP competition to get test set scores
+
+	d. Write script to get test set score for MRPC
+
+Presentation goals:
+
+1. Brief summary of the task - Probing BERT for paraphrasing task
+	- Using cross-datasets
+	- Inspecting impact of removing common words
+
+2. Show graph of training with/without cross-datasets
+
+3. Show initial results on QQP and MRPC - good if we have test set evaluation
+
+4. Show some impact of removing common words ‘a’, ‘the’ on the predictions

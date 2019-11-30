@@ -31,3 +31,31 @@ Presentation goals:
 3. Show initial results on QQP and MRPC - good if we have test set evaluation
 
 4. Show some impact of removing common words ‘a’, ‘the’ on the predictions
+
+
+Word removal
+
+F := Create a file with same first and second sentence
+
+Read ‘vocab.txt’ file
+
+For each word w:
+	create new file ‘nf’
+	For each row in F:
+		if second sentence has ‘w’:
+			remove ‘w’ from second sentence
+			write this modified row to new file ‘nf’
+		else:
+			continue
+	evaluate the model on ‘nf’
+	count the number of ‘0’ predictions / total number of rows in ‘nf’
+
+
+Output:
+
+‘The’ - 0
+‘A’ - 0
+..
+..
+..
+‘Science’ > 0

@@ -6,6 +6,7 @@ import numpy as np
 import tensorflow as tf
 import csv
 from tqdm import tqdm
+
 MODEL_CLASSES = {
     'bert': (BertConfig, BertForSequenceClassification, BertTokenizer),
     'xlnet': (XLNetConfig, XLNetForSequenceClassification, XLNetTokenizer),
@@ -29,8 +30,8 @@ parser.add_argument("--o", default="../../glue_data/MRPC/dev_new.tsv", type=str,
 args = parser.parse_args()
 config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
 
-# Load dataset, tokenizer, model from pretrained model/vocabulary
 
+# Load dataset, tokenizer, model from pretrained model/vocabulary
 model = model_class.from_pretrained(args.m)
 tokenizer = tokenizer_class.from_pretrained(args.m, do_lower_case=args.do_lower_case)
 

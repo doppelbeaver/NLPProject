@@ -41,7 +41,7 @@ with open(args.i) as tsvfile, open(args.o,"w") as  t:
     temp = csv.writer(t, delimiter="\t", quoting=csv.QUOTE_NONE,escapechar='', quotechar='')
 
     i = 0 
-    for row in tqdm(len(tsvreader)):
+    for row in tqdm(tsvreader):
     	if i != 0:
             sentence_0 = row[3]
             sentence_1 = row[4]

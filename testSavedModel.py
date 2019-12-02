@@ -3,7 +3,10 @@ from transformers import *
 import argparse
 import torch
 import numpy as np
+<<<<<<< Updated upstream
 import tensorflow as tf
+=======
+>>>>>>> Stashed changes
 import csv
 from tqdm import tqdm
 
@@ -20,6 +23,7 @@ parser.add_argument("--model_type", default=None, type=str, required=True,
                         help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
 parser.add_argument("--do_lower_case", action='store_true',
                         help="Set this flag if you are using an uncased model.")
+<<<<<<< Updated upstream
 parser.add_argument("--p", default='bert-base-cased', type=str,
                         help="Pretrained model (bert-base-cased)")
 parser.add_argument("--m", default='../../output/MRPC/checkpoint-2250/', type=str, 
@@ -27,6 +31,13 @@ parser.add_argument("--m", default='../../output/MRPC/checkpoint-2250/', type=st
 
 parser.add_argument("--i", default="../../glue_data/MRPC/dev.tsv", type=str, help="Directory of the input file")
 parser.add_argument("--o", default="../../glue_data/MRPC/dev_new.tsv", type=str, help="Directory of the output file")
+=======
+parser.add_argument("-m", default='../../output/MRPC/checkpoint-2250/', type=str, 
+                        help="Directory of fine-tuned model")
+
+parser.add_argument("-i", default="../../glue_data/MRPC/dev.tsv", type=str, help="Directory of the input file")
+parser.add_argument("-o", default="../../glue_data/MRPC/dev_new.tsv", type=str, help="Directory of the output file")
+>>>>>>> Stashed changes
 args = parser.parse_args()
 config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
 

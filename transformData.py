@@ -1,7 +1,6 @@
 import csv 
 import string
 import pdb 
-import pandas as pd
 import argparse
 
 

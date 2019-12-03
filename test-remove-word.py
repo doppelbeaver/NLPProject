@@ -59,12 +59,13 @@ def write_wrong_output(args, examples, task, prefix, preds, labels, suffix):
     assert len(preds) == len(labels), "Number of labels different than number of predictions"
     assert len(preds) == len(examples), "Number of examples different than number of predictions"
     output_pred_file = os.path.join(args.output_dir, prefix, "dev_preds_" + suffix + ".tsv")
-    with open(output_pred_file, "w") as writer:
-        for i in range(len(preds)):
-            if preds[i] != labels[i]:
-                writer.write("%d\t%s\t%s\n" % (preds[i],
-                    examples[i].text_a, examples[i].text_b))
-
+    text = ""
+    for i in range(len(preds)):
+        if preds[i] != labels[i]:
+            text += "%d\t%s\t%s\n" % (preds[i], examples[i].text_a, examples[i].text_b)
+    if len(text) > 0:
+        with open(output_pred_file, "w") as writer:
+            writer.write(text)
 
 def get_dataset(args, task, examples, tokenizer, evaluate=True):
     processor = processors[task]()
@@ -153,14 +154,6 @@ def evaluate(args, model, tokenizer, examples, prefix="", write_output=True, out
         result = compute_metrics(eval_task, preds, out_label_ids)
         results.update(result)
 
-        output_eval_file = os.path.join(eval_output_dir, prefix, "eval_results_" + out_file_suffix + ".txt")
-        with open(output_eval_file, "w") as writer:
-            logger.info("***** Eval results {} *****".format(prefix))
-            writer.write("Number: %d\n" % len(examples))
-            for key in sorted(result.keys()):
-                logger.info("  %s = %s", key, str(result[key]))
-                writer.write("%s = %s\n" % (key, str(result[key])))
-
     return results
 
 def main():
@@ -184,7 +177,8 @@ def main():
                         help="Batch size per GPU/CPU for evaluation.")
     args = parser.parse_args()
 
-    device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+    print(torch.cuda.is_available())
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     args.n_gpu = torch.cuda.device_count()
     args.device = device
 
@@ -203,6 +197,7 @@ def main():
     config = config_class.from_pretrained(args.model_name_or_path, num_labels=num_labels, finetuning_task=args.task_name)
     tokenizer = tokenizer_class.from_pretrained(args.model_name_or_path, do_lower_case=False)
     model = model_class.from_pretrained(args.model_name_or_path, from_tf=bool('.ckpt' in args.model_name_or_path), config=config)
+    model.to(args.device)
 
     examples = processor.get_dev_examples(args.data_dir)
     vocab = set()
@@ -215,22 +210,29 @@ def main():
             vocab.add(word)
 
     vocab  = list(vocab)
-    for word in vocab:
-        print(word)
-        new_examples = []
-        for ex in examples:
-            sent2 = ex.text_b
-            words = sent2.split(" ")
-            new_words = list(filter(lambda x: x != word, words))
-            if len(words) == len(new_words):
-                continue
-            sent2 = ' '.join(new_words)
-            new_examples.append(InputExample(guid=ex.guid,
-                text_a=ex.text_a,
-                text_b=sent2,
-                label=ex.label))
-        if len(new_examples) > 0:
-            result = evaluate(args, model, tokenizer, new_examples, write_output=True, out_file_suffix=word)
+    fwd_idx = 0
+    output_file = os.path.join(args.output_dir, "counts.tsv")
+    with open(output_file, "w") as writer:
+        for word in vocab:
+            new_examples = []
+            for ex in examples:
+                sent2 = ex.text_b
+                words = sent2.split(" ")
+                new_words = list(filter(lambda x: x != word, words))
+                if len(words) == len(new_words):
+                    continue
+                sent2 = ' '.join(new_words)
+                new_examples.append(InputExample(guid=ex.guid,
+                    text_a=ex.text_a,
+                    text_b=sent2,
+                    label=ex.label))
+            writer.write("%s\t%d\n" % (word, len(new_examples)))
+            suffix = word
+            if '/' in suffix:
+                suffix = "whack" + str(fwd_idx)
+                fwd_idx += 1
+            if len(new_examples) > 0:
+                result = evaluate(args, model, tokenizer, new_examples, write_output=True, out_file_suffix=suffix)
 
 if __name__ == "__main__":
     main()

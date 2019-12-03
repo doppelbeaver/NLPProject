@@ -204,10 +204,10 @@ def main():
     for ex in examples:
         words = ex.text_a.split(" ")
         for word in words:
-            vocab.add(word)
+            vocab.add(word.lower())
         words = ex.text_b.split(" ")
         for word in words:
-            vocab.add(word)
+            vocab.add(word.lower())
 
     vocab  = list(vocab)
     fwd_idx = 0
@@ -218,7 +218,7 @@ def main():
             for ex in examples:
                 sent2 = ex.text_b
                 words = sent2.split(" ")
-                new_words = list(filter(lambda x: x != word, words))
+                new_words = list(filter(lambda x: x.lower() != word, words))
                 if len(words) == len(new_words):
                     continue
                 sent2 = ' '.join(new_words)

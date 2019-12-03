@@ -62,7 +62,7 @@ def write_wrong_output(args, examples, task, prefix, preds, labels, suffix):
     text = ""
     for i in range(len(preds)):
         if preds[i] != labels[i]:
-            text += "%d\t%s\t%s\n" % (preds[i], examples[i].text_a, examples[i].text_b)
+            text += "%d\t%s\t%s\t%s\n" % (preds[i], examples[i].guid, examples[i].text_a, examples[i].text_b)
     if len(text) > 0:
         with open(output_pred_file, "w") as writer:
             writer.write(text)

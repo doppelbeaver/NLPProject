@@ -7,15 +7,15 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--input_dir", default=None, type=str, required=True,
+parser.add_argument("--input", default=None, type=str, required=True,
                         help="The input data dir. Should contain the .tsv files (or other data files) for the task.")
-parser.add_argument("--output_dir", default=None, type=str, required=True,
+parser.add_argument("--output", default=None, type=str, required=True,
                         help="The output directory where the model predictions and checkpoints will be written.")
 parser.add_argument("--d", default=None, type=str, required = True, help="What data? Quora (Q) or Microsoft (M)")
 
 args = parser.parse_args()
 if args.d == "Q":
-    with open(args.input_dir) as tsvfile, open(args.output_dir,"w") as  t:
+    with open(args.input) as tsvfile, open(args.output,"w") as  t:
         tsvreader = csv.reader (tsvfile, delimiter = '\t', quoting = csv.QUOTE_NONE)
         temp = csv.writer(t, delimiter="\t", quoting=csv.QUOTE_NONE,escapechar='', quotechar='')
 
@@ -32,15 +32,15 @@ if args.d == "Q":
                 print(row, i)
                 continue
                 
-elif args.d == "M"
-    with open(args.input_dir) as tsvfile, open(args.output,"w") as  t:
+elif args.d == "M":
+    with open(args.input) as tsvfile, open(args.output,"w") as  t:
         tsvreader = csv.reader (tsvfile, delimiter = '\t', quoting = csv.QUOTE_NONE)
         temp = csv.writer(t, delimiter="\t", quoting=csv.QUOTE_NONE,escapechar='', quotechar='')
 
-    i = 0 
-    for row in tsvreader:
-        if i != 0:  
-            row[4] = row[3]
-            row[0] = '1'
-        temp.writerow(row)
-        i +=1
+        i = 0 
+        for row in tsvreader:
+            if i != 0:  
+                row[4] = row[3]
+                row[0] = '1'
+            temp.writerow(row)
+            i +=1

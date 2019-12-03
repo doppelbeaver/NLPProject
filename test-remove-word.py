@@ -59,7 +59,6 @@ def write_wrong_output(args, examples, task, prefix, preds, labels, suffix):
     assert len(preds) == len(labels), "Number of labels different than number of predictions"
     assert len(preds) == len(examples), "Number of examples different than number of predictions"
     output_pred_file = os.path.join(args.output_dir, prefix, "dev_preds_" + suffix + ".tsv")
-    print(output_pred_file)
     with open(output_pred_file, "w") as writer:
         for i in range(len(preds)):
             if preds[i] != labels[i]:
@@ -154,9 +153,10 @@ def evaluate(args, model, tokenizer, examples, prefix="", write_output=True, out
         result = compute_metrics(eval_task, preds, out_label_ids)
         results.update(result)
 
-        output_eval_file = os.path.join(eval_output_dir, prefix, "eval_results.txt")
+        output_eval_file = os.path.join(eval_output_dir, prefix, "eval_results_" + out_file_suffix + ".txt")
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results {} *****".format(prefix))
+            writer.write("Number: %d\n" % len(examples))
             for key in sorted(result.keys()):
                 logger.info("  %s = %s", key, str(result[key]))
                 writer.write("%s = %s\n" % (key, str(result[key])))
@@ -229,7 +229,8 @@ def main():
                 text_a=ex.text_a,
                 text_b=sent2,
                 label=ex.label))
-        evaluate(args, model, tokenizer, new_examples, write_output=True, out_file_suffix=word)
+        if len(new_examples) > 0:
+            result = evaluate(args, model, tokenizer, new_examples, write_output=True, out_file_suffix=word)
 
 if __name__ == "__main__":
     main()

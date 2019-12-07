@@ -177,7 +177,6 @@ def main():
                         help="Batch size per GPU/CPU for evaluation.")
     args = parser.parse_args()
 
-    print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     args.n_gpu = torch.cuda.device_count()
     args.device = device

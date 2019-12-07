@@ -36,7 +36,7 @@ def main():
             line = of.readline()
 
     counts_filepath = os.path.join(args.removed_dir, "counts.tsv")
-    print("Word\tTotal\tWorse\tBetter")
+    print("Word\tTotal\tOriginal\tWorse\tBetter")
     with open(counts_filepath) as cf:
         line = cf.readline()
         fwd_idx = 0
@@ -66,7 +66,7 @@ def main():
                         guid = wline.split("\t")[1]
                         wm.add(guid)
                         wline = wf.readline()
-            print(f"{word}\t{count}\t{len(wm - om)}\t{len(om - wm)}")
+            print(f"{word}\t{count}\t{len(om)}\t{len(wm - om)}\t{len(om - wm)}")
 
             line = cf.readline()
     

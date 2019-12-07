@@ -20,7 +20,7 @@ def main():
     ## Required parameters
     parser.add_argument("--original", default=None, type=str, required=True)
     parser.add_argument("--removed_dir", default=None, type=str, required=True)
-    arg = parser.parse_args()
+    args = parser.parse_args()
 
     olines = read_tsv(args.original)
     guid_to_textb = {}
@@ -36,14 +36,14 @@ def main():
             line = of.readline()
 
     counts_filepath = os.path.join(args.removed_dir, "counts.tsv")
-    print("Word\t\tTotal\tWorse\tBetter")
+    print("Word\tTotal\tWorse\tBetter")
     with open(counts_filepath) as cf:
         line = cf.readline()
         fwd_idx = 0
         while line:
             split_line = line.split("\t")
             word = split_line[0]
-            count = split_line[1]
+            count = int(split_line[1])
             om = set()
             for guid in ol:
                 textb = guid_to_textb[guid]
@@ -59,14 +59,14 @@ def main():
                     "dev_preds_"+suffix+".tsv")
 
             wm = set()
-            if os.exists(word_filepath):
+            if os.path.exists(word_filepath):
                 with open(word_filepath) as wf:
                     wline = wf.readline()
                     while wline:
                         guid = wline.split("\t")[1]
                         wm.add(guid)
                         wline = wf.readline()
-            print(f"{word}\t\t {count}\t{len(wm - om)}\t{len(om - wm)}")
+            print(f"{word}\t{count}\t{len(wm - om)}\t{len(om - wm)}")
 
             line = cf.readline()
     
